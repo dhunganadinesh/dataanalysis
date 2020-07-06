@@ -69,6 +69,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 
 
 
@@ -361,7 +362,7 @@ df_titanic %&gt;% count(fare, sort =  TRUE)</code></pre>
 <pre class="r"><code>df_titanic &lt;- df_titanic %&gt;% mutate(fare_div = ifelse(fare &lt;= 20, &quot;low&quot;,
                                    ifelse(fare&gt;20 &amp; fare&lt;=50, &quot;low-medium&quot;,
                                           ifelse(fare&gt;50 &amp; fare&lt;= 75, &quot;medium&quot;, &quot;high&quot;))))
-df_titanic %&gt;% filter(survived %in% c(0,1)) %&gt;% ggplot( aes(x = fare_div, fill = as.factor(survived))) + geom_bar() + labs(fill = &quot;survived&quot;) +facet_wrap(~fare_div)</code></pre>
+df_titanic %&gt;% filter(survived %in% c(0,1)) %&gt;% ggplot( aes(x = fare_div, fill = as.factor(survived))) + geom_bar() + labs(fill = &quot;survived&quot;) +facet_wrap(~fare_div) + theme_bw()</code></pre>
 <p><img src="Titanic_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p><strong>Plotting according to newly generated data, title and displaying survived data.</strong></p>
 <pre class="r"><code>df_titanic %&gt;% filter(survived %in% c(0,1)) %&gt;% ggplot( aes(x = pclass, fill = as.factor(survived))) + geom_bar() + labs(fill = &quot;survived&quot;) +facet_wrap(~title) + theme_bw()</code></pre>
@@ -400,15 +401,15 @@ final_df %&gt;% count(survived, sort = TRUE)</code></pre>
 <pre><code>## 
  plot: [1,1] [==&gt;-------------------------------------------------------------]  4% est: 0s 
  plot: [1,2] [====&gt;-----------------------------------------------------------]  8% est: 1s 
- plot: [1,3] [=======&gt;--------------------------------------------------------] 12% est: 2s 
+ plot: [1,3] [=======&gt;--------------------------------------------------------] 12% est: 1s 
  plot: [1,4] [=========&gt;------------------------------------------------------] 16% est: 2s 
  plot: [1,5] [============&gt;---------------------------------------------------] 20% est: 2s 
- plot: [2,1] [==============&gt;-------------------------------------------------] 24% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+ plot: [2,1] [==============&gt;-------------------------------------------------] 24% est: 2s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## 
  plot: [2,2] [=================&gt;----------------------------------------------] 28% est: 2s 
  plot: [2,3] [===================&gt;--------------------------------------------] 32% est: 2s 
- plot: [2,4] [======================&gt;-----------------------------------------] 36% est: 1s 
- plot: [2,5] [=========================&gt;--------------------------------------] 40% est: 1s 
+ plot: [2,4] [======================&gt;-----------------------------------------] 36% est: 2s 
+ plot: [2,5] [=========================&gt;--------------------------------------] 40% est: 2s 
  plot: [3,1] [===========================&gt;------------------------------------] 44% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## 
  plot: [3,2] [==============================&gt;---------------------------------] 48% est: 1s 
@@ -420,7 +421,7 @@ final_df %&gt;% count(survived, sort = TRUE)</code></pre>
  plot: [4,2] [===========================================&gt;--------------------] 68% est: 1s 
  plot: [4,3] [=============================================&gt;------------------] 72% est: 1s 
  plot: [4,4] [================================================&gt;---------------] 76% est: 1s 
- plot: [4,5] [==================================================&gt;-------------] 80% est: 0s 
+ plot: [4,5] [==================================================&gt;-------------] 80% est: 1s 
  plot: [5,1] [=====================================================&gt;----------] 84% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## 
  plot: [5,2] [=======================================================&gt;--------] 88% est: 0s 

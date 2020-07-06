@@ -72,7 +72,7 @@ Fare is75 or more, high.
 df_titanic <- df_titanic %>% mutate(fare_div = ifelse(fare <= 20, "low",
                                    ifelse(fare>20 & fare<=50, "low-medium",
                                           ifelse(fare>50 & fare<= 75, "medium", "high"))))
-df_titanic %>% filter(survived %in% c(0,1)) %>% ggplot( aes(x = fare_div, fill = as.factor(survived))) + geom_bar() + labs(fill = "survived") +facet_wrap(~fare_div)
+df_titanic %>% filter(survived %in% c(0,1)) %>% ggplot( aes(x = fare_div, fill = as.factor(survived))) + geom_bar() + labs(fill = "survived") +facet_wrap(~fare_div) + theme_bw()
 ```
 
 **Plotting according to newly generated data, title and displaying survived data.**

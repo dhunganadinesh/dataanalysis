@@ -20,3 +20,4 @@ output:
     toc_depth: 3
     toc_float:
       collapsed: false
+    css: style.css
