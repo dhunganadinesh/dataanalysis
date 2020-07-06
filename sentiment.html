@@ -317,17 +317,17 @@ $(document).ready(function () {
 ## 4     4 Trump   Well, first of all, we have arrested, I think almost, but it could be over th…
 ## 5     5 Sean    Yeah, you had Shaun King, the radical.                                        
 ## 6     6 Trump   These have nothing to do with any particular event, other than they’re troubl…</code></pre>
-<p><strong>Number of other attendes has asked questions with Trum, but we will only focus on the answers from the Trump. Filtering the speech from Trump and Sean, creating line number and dividinng sentence into one word data.</strong></p>
+<p><strong>A number of other attendees had asked questions with Trump, but we will only focus on the answers from Trump. Filtering the speech from Trump and Sean, creating line number and dividing the sentence into one-word data.</strong></p>
 <pre class="r"><code>tidy_int &lt;- interview %&gt;% filter(speaker == c(&quot;Trump&quot;, &quot;Sean&quot;)) %&gt;%group_by(speaker) %&gt;% mutate(linenumber = row_number()) %&gt;% ungroup() %&gt;% unnest_tokens(word, conv) %&gt;% anti_join(stop_words)</code></pre>
 <pre><code>## Warning in speaker == c(&quot;Trump&quot;, &quot;Sean&quot;): longer object length is not a multiple of shorter
 ## object length</code></pre>
-<p><strong>Measuring sentiment in positive and negative node. Reference used from Bing sentiment word list.</strong></p>
+<p><strong>Measuring sentiment in the positive and negative node. Reference used from Bing sentiment word list.</strong></p>
 <pre class="r"><code>int_senti &lt;- tidy_int %&gt;% inner_join(get_sentiments(&quot;bing&quot;)) %&gt;% count(speaker, index = linenumber %/% 1, sentiment) %&gt;% spread(sentiment, n ,fill = 0) %&gt;% mutate(sentiment = positive - negative)</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <p><strong>Plotting the sentiment of Trump and reporter Sean.</strong></p>
 <pre class="r"><code>ggplot(int_senti, aes(index, sentiment, fill =speaker)) + geom_col(show.legend = FALSE) + facet_wrap(~speaker) + theme_bw()</code></pre>
 <p><img src="sentiment_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p><strong>Clound plot of most used words during the interview related to sentiment.</strong></p>
+<p><strong>Cloud plot of most used words during the interview related to sentiment.</strong></p>
 <pre class="r"><code>tidy_int %&gt;% anti_join(stop_words) %&gt;% count(word)%&gt;% with(wordcloud(word, n, max.words = 20))</code></pre>
 <p><img src="sentiment_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p><strong>Displaying Positive and Negative sentiments during the interview.</strong></p>

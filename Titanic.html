@@ -309,7 +309,7 @@ $(document).ready(function () {
 <p><strong>Two files were loaded, Test.csv and Train.csv. The column name for data contains uppercase, so renaming them with lowercase.</strong></p>
 <pre class="r"><code>names(test) &lt;- tolower(names(test))
 names(train) &lt;- tolower(names(train))</code></pre>
-<p><strong>Adding survived column missing in Test data and combining both of them in single dataframe, df_titanic.</strong></p>
+<p><strong>Adding survived column missing in Test data and combining both of them in a single data frame, df_titanic.</strong></p>
 <pre class="r"><code>test&lt;- test %&gt;% mutate(survived = &quot;none&quot;)
 train&lt;- train[, c(1,3:12,2)]
 head(test, 2)</code></pre>
@@ -357,7 +357,7 @@ df_titanic %&gt;% count(fare, sort =  TRUE)</code></pre>
 ##  9  7.92    23
 ## 10 26.6     22
 ## # … with 272 more rows</code></pre>
-<p><strong>The survival rate depends on the fare of the ticket. So, grouping people according to fare.</strong> Fare is 20 or less then, low. Fare is more than 20 and less then or equalt to 50, low-medium. Fare is more than 50 and less then or equalt to 75, medium. Fare is75 or more, high.</p>
+<p><strong>The survival rate depends on the fare of the ticket. So, grouping people according to fare.</strong> Fare is 20 or less than, low. Fare is more than 20 and less than or equal to 50, low-medium. Fare is more than 50 and less than or equal to 75, medium. Fare is 75 or more, high.</p>
 <pre class="r"><code>df_titanic &lt;- df_titanic %&gt;% mutate(fare_div = ifelse(fare &lt;= 20, &quot;low&quot;,
                                    ifelse(fare&gt;20 &amp; fare&lt;=50, &quot;low-medium&quot;,
                                           ifelse(fare&gt;50 &amp; fare&lt;= 75, &quot;medium&quot;, &quot;high&quot;))))
