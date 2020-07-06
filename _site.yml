@@ -4,5 +4,19 @@ navbar:
   left:
     - text: "Home"
       href: index.html
+    - text: "Titanic Survival"
+      href: Titanic.html
+    - text: "Sentiment Analysis"
+      href: sentiment.html  
+    - text: "Hotel Booking"
+      href: hotel_booking.html
     - text: "About"
-      href: about.html
+      href: page1.html
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    mathjax: null
+    toc_depth: 3
+    toc_float:
+      collapsed: false

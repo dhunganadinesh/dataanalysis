@@ -1,0 +1,113 @@
+---
+title: "Titanic Machine Learning for Disaster"
+author: "Dinesh"
+date: "29/06/2020"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(gridExtra)
+library(tidyverse)
+library(randomForest)
+library(GGally)
+test <- read_csv("~/Desktop/CSV/Kaggle/test.csv")
+train <- read_csv("~/Desktop/CSV/Kaggle/train.csv")
+```
+
+
+**Two files were loaded, Test.csv and Train.csv. The column name for data contains uppercase, so renaming them with lowercase.**
+```{r}
+names(test) <- tolower(names(test))
+names(train) <- tolower(names(train))
+```
+
+**Adding survived column missing in Test data and combining both of them in single dataframe, df_titanic.**
+```{r}
+test<- test %>% mutate(survived = "none")
+train<- train[, c(1,3:12,2)]
+head(test, 2)
+head(train, 2)
+df_titanic <- rbind(train, test)
+```
+
+**Plotting data according to Passenger Class and Survived according to sex.**
+```{r}
+
+ggplot(train, aes(x = pclass, fill = as.factor(survived))) + geom_bar() + labs(fill = "survived") +facet_wrap(~sex) + theme_bw()
+
+```
+
+**Name contains Mr, Mrs, Miss etc. Creating a new column according to title. If not specific then other.**
+```{r}
+df_titanic <- df_titanic %>% mutate(title = case_when(str_detect(name, "Mr.") ~ "Mr",
+                                         str_detect(name, "Mrs.") ~ "Mrs",
+                                         str_detect(name, "Miss.") ~ "Miss",
+                                         str_detect(name, "Master.") ~ "Master",
+                                         TRUE ~ "other"
+                                         ))
+```
+
+**Title has Dr, Rv etc. so converting them into male according to sex.**
+```{r}
+for(i in 1:nrow(df_titanic)){
+  if(df_titanic[i,13] == "other"){
+    if(df_titanic[i,4] == "male"){df_titanic[i, 13] = "Mr"}
+  }
+}
+
+df_titanic %>% count(fare, sort =  TRUE)
+```
+
+**The survival rate depends on the fare of the ticket. So, grouping people according to fare.**
+Fare is 20 or less then, low.
+Fare is more than 20 and less then or equalt to 50, low-medium.
+Fare is more than 50 and less then or equalt to 75, medium.
+Fare is75 or more, high.
+```{r}
+df_titanic <- df_titanic %>% mutate(fare_div = ifelse(fare <= 20, "low",
+                                   ifelse(fare>20 & fare<=50, "low-medium",
+                                          ifelse(fare>50 & fare<= 75, "medium", "high"))))
+df_titanic %>% filter(survived %in% c(0,1)) %>% ggplot( aes(x = fare_div, fill = as.factor(survived))) + geom_bar() + labs(fill = "survived") +facet_wrap(~fare_div)
+```
+
+**Plotting according to newly generated data, title and displaying survived data.**
+```{r}
+df_titanic %>% filter(survived %in% c(0,1)) %>% ggplot( aes(x = pclass, fill = as.factor(survived))) + geom_bar() + labs(fill = "survived") +facet_wrap(~title) + theme_bw()
+```
+
+**Building a model for prediction according to combined ("pclass", "title","sex","fare_div").**
+```{r}
+rf_train1<- df_titanic[1:891, c("pclass", "title","sex","fare_div")]
+rf_label <- as.factor(df_titanic[1:891,]$survived)
+set.seed(1234)
+rf1 <- randomForest(x = rf_train1, y = rf_label, importance = TRUE, ntree = 1000)
+rf1
+
+```
+
+**Making prediction according t the prediction.**
+```{r}
+test_predict_df<- df_titanic[892:1309, c("pclass", "title","sex","fare_div")]
+test_predict_df<- test_predict_df %>% replace_na(list(fare_div = "low"))
+r1_predict<- predict(rf1, test_predict_df)
+final_df <- data.frame(test_predict_df, survived = r1_predict)
+final_df %>% count(survived, sort = TRUE)
+
+```
+
+**Plotting the output according to sex and fare division.**
+```{r, warning= FALSE}
+
+ggplot(data = final_df, aes(x = sex, fill = as.factor(survived)) ) + geom_bar() + theme_bw() + labs(fill = "survived") + facet_wrap(~fare_div)
+
+final_df %>% ggpairs(mapping = aes(color = survived))
+
+
+```
+
+

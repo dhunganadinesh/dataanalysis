@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dinesh" />
+
+
+<title>Titanic Machine Learning for Disaster</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Titanic.html">Titanic Survival</a>
+</li>
+<li>
+  <a href="sentiment.html">Sentiment Analysis</a>
+</li>
+<li>
+  <a href="hotel_booking.html">Hotel Booking</a>
+</li>
+<li>
+  <a href="page1.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="section-header">
+
+
+
+<h1 class="title toc-ignore">Titanic Machine Learning for Disaster</h1>
+<h4 class="author">Dinesh</h4>
+<h4 class="date">29/06/2020</h4>
+
+</div>
+
+
+<p><strong>Two files were loaded, Test.csv and Train.csv. The column name for data contains uppercase, so renaming them with lowercase.</strong></p>
+<pre class="r"><code>names(test) &lt;- tolower(names(test))
+names(train) &lt;- tolower(names(train))</code></pre>
+<p><strong>Adding survived column missing in Test data and combining both of them in single dataframe, df_titanic.</strong></p>
+<pre class="r"><code>test&lt;- test %&gt;% mutate(survived = &quot;none&quot;)
+train&lt;- train[, c(1,3:12,2)]
+head(test, 2)</code></pre>
+<pre><code>## # A tibble: 2 x 12
+##   passengerid pclass name         sex     age sibsp parch ticket  fare cabin embarked survived
+##         &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;   
+## 1         892      3 Kelly, Mr. … male   34.5     0     0 330911  7.83 &lt;NA&gt;  Q        none    
+## 2         893      3 Wilkes, Mrs… fema…  47       1     0 363272  7    &lt;NA&gt;  S        none</code></pre>
+<pre class="r"><code>head(train, 2)</code></pre>
+<pre><code>## # A tibble: 2 x 12
+##   passengerid pclass name         sex     age sibsp parch ticket  fare cabin embarked survived
+##         &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;
+## 1           1      3 Braund, Mr.… male     22     1     0 A/5 2…  7.25 &lt;NA&gt;  S               0
+## 2           2      1 Cumings, Mr… fema…    38     1     0 PC 17… 71.3  C85   C               1</code></pre>
+<pre class="r"><code>df_titanic &lt;- rbind(train, test)</code></pre>
+<p><strong>Plotting data according to Passenger Class and Survived according to sex.</strong></p>
+<pre class="r"><code>ggplot(train, aes(x = pclass, fill = as.factor(survived))) + geom_bar() + labs(fill = &quot;survived&quot;) +facet_wrap(~sex) + theme_bw()</code></pre>
+<p><img src="Titanic_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><strong>Name contains Mr, Mrs, Miss etc. Creating a new column according to title. If not specific then other.</strong></p>
+<pre class="r"><code>df_titanic &lt;- df_titanic %&gt;% mutate(title = case_when(str_detect(name, &quot;Mr.&quot;) ~ &quot;Mr&quot;,
+                                         str_detect(name, &quot;Mrs.&quot;) ~ &quot;Mrs&quot;,
+                                         str_detect(name, &quot;Miss.&quot;) ~ &quot;Miss&quot;,
+                                         str_detect(name, &quot;Master.&quot;) ~ &quot;Master&quot;,
+                                         TRUE ~ &quot;other&quot;
+                                         ))</code></pre>
+<p><strong>Title has Dr, Rv etc. so converting them into male according to sex.</strong></p>
+<pre class="r"><code>for(i in 1:nrow(df_titanic)){
+  if(df_titanic[i,13] == &quot;other&quot;){
+    if(df_titanic[i,4] == &quot;male&quot;){df_titanic[i, 13] = &quot;Mr&quot;}
+  }
+}
+
+df_titanic %&gt;% count(fare, sort =  TRUE)</code></pre>
+<pre><code>## # A tibble: 282 x 2
+##     fare     n
+##    &lt;dbl&gt; &lt;int&gt;
+##  1  8.05    60
+##  2 13       59
+##  3  7.75    55
+##  4 26       50
+##  5  7.90    49
+##  6 10.5     35
+##  7  7.78    26
+##  8  7.23    24
+##  9  7.92    23
+## 10 26.6     22
+## # … with 272 more rows</code></pre>
+<p><strong>The survival rate depends on the fare of the ticket. So, grouping people according to fare.</strong> Fare is 20 or less then, low. Fare is more than 20 and less then or equalt to 50, low-medium. Fare is more than 50 and less then or equalt to 75, medium. Fare is75 or more, high.</p>
+<pre class="r"><code>df_titanic &lt;- df_titanic %&gt;% mutate(fare_div = ifelse(fare &lt;= 20, &quot;low&quot;,
+                                   ifelse(fare&gt;20 &amp; fare&lt;=50, &quot;low-medium&quot;,
+                                          ifelse(fare&gt;50 &amp; fare&lt;= 75, &quot;medium&quot;, &quot;high&quot;))))
+df_titanic %&gt;% filter(survived %in% c(0,1)) %&gt;% ggplot( aes(x = fare_div, fill = as.factor(survived))) + geom_bar() + labs(fill = &quot;survived&quot;) +facet_wrap(~fare_div)</code></pre>
+<p><img src="Titanic_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><strong>Plotting according to newly generated data, title and displaying survived data.</strong></p>
+<pre class="r"><code>df_titanic %&gt;% filter(survived %in% c(0,1)) %&gt;% ggplot( aes(x = pclass, fill = as.factor(survived))) + geom_bar() + labs(fill = &quot;survived&quot;) +facet_wrap(~title) + theme_bw()</code></pre>
+<p><img src="Titanic_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><strong>Building a model for prediction according to combined (“pclass”, “title”,“sex”,“fare_div”).</strong></p>
+<pre class="r"><code>rf_train1&lt;- df_titanic[1:891, c(&quot;pclass&quot;, &quot;title&quot;,&quot;sex&quot;,&quot;fare_div&quot;)]
+rf_label &lt;- as.factor(df_titanic[1:891,]$survived)
+set.seed(1234)
+rf1 &lt;- randomForest(x = rf_train1, y = rf_label, importance = TRUE, ntree = 1000)
+rf1</code></pre>
+<pre><code>## 
+## Call:
+##  randomForest(x = rf_train1, y = rf_label, ntree = 1000, importance = TRUE) 
+##                Type of random forest: classification
+##                      Number of trees: 1000
+## No. of variables tried at each split: 2
+## 
+##         OOB estimate of  error rate: 16.95%
+## Confusion matrix:
+##     0   1 class.error
+## 0 496  53  0.09653916
+## 1  98 244  0.28654971</code></pre>
+<p><strong>Making prediction according t the prediction.</strong></p>
+<pre class="r"><code>test_predict_df&lt;- df_titanic[892:1309, c(&quot;pclass&quot;, &quot;title&quot;,&quot;sex&quot;,&quot;fare_div&quot;)]
+test_predict_df&lt;- test_predict_df %&gt;% replace_na(list(fare_div = &quot;low&quot;))
+r1_predict&lt;- predict(rf1, test_predict_df)
+final_df &lt;- data.frame(test_predict_df, survived = r1_predict)
+final_df %&gt;% count(survived, sort = TRUE)</code></pre>
+<pre><code>##   survived   n
+## 1        0 264
+## 2        1 154</code></pre>
+<p><strong>Plotting the output according to sex and fare division.</strong></p>
+<pre class="r"><code>ggplot(data = final_df, aes(x = sex, fill = as.factor(survived)) ) + geom_bar() + theme_bw() + labs(fill = &quot;survived&quot;) + facet_wrap(~fare_div)</code></pre>
+<p><img src="Titanic_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>final_df %&gt;% ggpairs(mapping = aes(color = survived))</code></pre>
+<pre><code>## 
+ plot: [1,1] [==&gt;-------------------------------------------------------------]  4% est: 0s 
+ plot: [1,2] [====&gt;-----------------------------------------------------------]  8% est: 1s 
+ plot: [1,3] [=======&gt;--------------------------------------------------------] 12% est: 2s 
+ plot: [1,4] [=========&gt;------------------------------------------------------] 16% est: 2s 
+ plot: [1,5] [============&gt;---------------------------------------------------] 20% est: 2s 
+ plot: [2,1] [==============&gt;-------------------------------------------------] 24% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [2,2] [=================&gt;----------------------------------------------] 28% est: 2s 
+ plot: [2,3] [===================&gt;--------------------------------------------] 32% est: 2s 
+ plot: [2,4] [======================&gt;-----------------------------------------] 36% est: 1s 
+ plot: [2,5] [=========================&gt;--------------------------------------] 40% est: 1s 
+ plot: [3,1] [===========================&gt;------------------------------------] 44% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [3,2] [==============================&gt;---------------------------------] 48% est: 1s 
+ plot: [3,3] [================================&gt;-------------------------------] 52% est: 1s 
+ plot: [3,4] [===================================&gt;----------------------------] 56% est: 1s 
+ plot: [3,5] [=====================================&gt;--------------------------] 60% est: 1s 
+ plot: [4,1] [========================================&gt;-----------------------] 64% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [4,2] [===========================================&gt;--------------------] 68% est: 1s 
+ plot: [4,3] [=============================================&gt;------------------] 72% est: 1s 
+ plot: [4,4] [================================================&gt;---------------] 76% est: 1s 
+ plot: [4,5] [==================================================&gt;-------------] 80% est: 0s 
+ plot: [5,1] [=====================================================&gt;----------] 84% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [5,2] [=======================================================&gt;--------] 88% est: 0s 
+ plot: [5,3] [==========================================================&gt;-----] 92% est: 0s 
+ plot: [5,4] [============================================================&gt;---] 96% est: 0s 
+ plot: [5,5] [================================================================]100% est: 0s 
+                                                                                            </code></pre>
+<p><img src="Titanic_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+</body>
+</html>

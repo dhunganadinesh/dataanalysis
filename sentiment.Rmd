@@ -1,0 +1,70 @@
+---
+title: "Trump sentiment in Townhall interview"
+author: "Dinesh"
+date: "28/06/2020"
+output: html_document
+runtime : shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(textdata)
+library(tidytext)
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(stringr)
+#interview <- read_excel("~/Desktop/CSV/interview.xlsx")
+library(tidyr)
+library(readr)
+library(wordcloud)
+library(reshape2)
+interview <- read_csv("~/Desktop/CSV/townhall_trump.csv")
+
+```
+
+**The transcript of the President Donald Trump interview with the reported has been loaded to analyse his sentiments during the interview.**
+```{r}
+head(interview)
+```
+
+
+
+```{r, include=FALSE}
+interview <- interview %>% select(-X1)
+```
+
+**Number of other attendes has asked questions with Trum, but we will only focus on the answers from the Trump. Filtering the speech from Trump and Sean, creating line number and dividinng sentence into one word data.**
+```{r, message=FALSE}
+
+tidy_int <- interview %>% filter(speaker == c("Trump", "Sean")) %>%group_by(speaker) %>% mutate(linenumber = row_number()) %>% ungroup() %>% unnest_tokens(word, conv) %>% anti_join(stop_words)
+```
+
+
+**Measuring sentiment in positive and negative node. Reference used from Bing sentiment word list.**
+```{r}
+int_senti <- tidy_int %>% inner_join(get_sentiments("bing")) %>% count(speaker, index = linenumber %/% 1, sentiment) %>% spread(sentiment, n ,fill = 0) %>% mutate(sentiment = positive - negative)
+```
+
+**Plotting the sentiment of Trump and reporter Sean.**
+```{r, message=FALSE}
+ggplot(int_senti, aes(index, sentiment, fill =speaker)) + geom_col(show.legend = FALSE) + facet_wrap(~speaker) + theme_bw()
+```
+
+**Clound plot of most used words during the interview related to sentiment.**
+```{r, message=FALSE}
+tidy_int %>% anti_join(stop_words) %>% count(word)%>% with(wordcloud(word, n, max.words = 20))
+```
+
+**Displaying Positive and Negative sentiments during the interview.**
+```{r, message=FALSE}
+
+tidy_int %>% inner_join(get_sentiments("bing")) %>% count(word, sentiment, sort = TRUE) %>% acast(word ~ sentiment, value.var = "n", fill = 0) %>% comparison.cloud(colors = c("steelblue", "pink"), max.words = 20)
+```
+
+Analysing the sentiment according to the sentence.
+```{r}
+#sent_int <- interview %>% unnest_tokens(sentece, conv, token = "sentences")
+
+```
+ 

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Analysis of Hotel Booking in relation to child stay.</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Titanic.html">Titanic Survival</a>
+</li>
+<li>
+  <a href="sentiment.html">Sentiment Analysis</a>
+</li>
+<li>
+  <a href="hotel_booking.html">Hotel Booking</a>
+</li>
+<li>
+  <a href="page1.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="section-header">
+
+
+
+<h1 class="title toc-ignore">Analysis of Hotel Booking in relation to child stay.</h1>
+
+</div>
+
+
+<p><strong>This analysis contains the hotel booking data from Year 2015 - 2017. The data is processed to display the booking result in two different hotels with and without children. </strong></p>
+<p><strong>We will analyse only the records where the guest stayed and removeRemoving unnecessary columns and canceled booking data.</strong></p>
+<pre class="r"><code>hotels &lt;- hotels %&gt;% select(hotel, is_canceled, arrival_date_month, stays_in_weekend_nights, stays_in_week_nights, adults, children, babies, meal, reserved_room_type, assigned_room_type, adr, required_car_parking_spaces, total_of_special_requests)
+
+hotel_stayed &lt;- hotels %&gt;%
+  filter(is_canceled == 0)
+
+hotel_stayed &lt;- hotel_stayed %&gt;%
+  select(-c(&quot;is_canceled&quot;))</code></pre>
+<p><strong>Combining children and baby stay to one column and changing numeric to character. Same with parking space.</strong></p>
+<pre class="r"><code>hotel_stayed&lt;- hotel_stayed %&gt;% mutate(children = case_when(
+  children + babies &gt;0 ~&quot;children&quot;, TRUE ~ &quot;none&quot;),
+  required_car_parking_spaces = case_when(
+    required_car_parking_spaces &gt; 0 ~ &quot;parking&quot;, TRUE ~ &quot;none&quot;
+  )
+  ) %&gt;% select(-babies)</code></pre>
+<p><strong>Converting arrival month to factor to rearrange from Jan - Dec.</strong></p>
+<pre class="r"><code>hotel_stayed %&gt;% 
+  mutate(arrival_date_month = factor(arrival_date_month, levels = month.name)) %&gt;% 
+  count(hotel, arrival_date_month, children) %&gt;%
+  group_by(hotel, children) %&gt;%
+  mutate(proportion =  n/sum(n))</code></pre>
+<pre><code>## # A tibble: 48 x 5
+## # Groups:   hotel, children [4]
+##    hotel      arrival_date_month children     n proportion
+##    &lt;chr&gt;      &lt;fct&gt;              &lt;chr&gt;    &lt;int&gt;      &lt;dbl&gt;
+##  1 City Hotel January            children   153     0.0432
+##  2 City Hotel January            none      2101     0.0492
+##  3 City Hotel February           children   263     0.0743
+##  4 City Hotel February           none      2801     0.0656
+##  5 City Hotel March              children   213     0.0602
+##  6 City Hotel March              none      3859     0.0904
+##  7 City Hotel April              children   339     0.0957
+##  8 City Hotel April              none      3676     0.0861
+##  9 City Hotel May                children   205     0.0579
+## 10 City Hotel May                none      4374     0.102 
+## # … with 38 more rows</code></pre>
+<p><strong>Plot displaying 2 hotel, City and Resort Hotel, number of guest with and without children through out the year. The data from 3 years is combined according to the month and displayed in the graph below.</strong></p>
+<pre class="r"><code>hotel_stayed %&gt;% 
+  mutate(arrival_date_month = factor(arrival_date_month, levels = month.name)) %&gt;% 
+  count(hotel, arrival_date_month, children) %&gt;% group_by(hotel, children) %&gt;% 
+  mutate(proportion = n/sum(n)) %&gt;% 
+  ggplot(aes(arrival_date_month, proportion, fill = children)) + 
+  geom_col(position = &quot;dodge&quot;) +
+  scale_y_continuous(labels = scales::percent_format()) + 
+  facet_wrap(~hotel, nrow = 2)</code></pre>
+<p><img src="hotel_booking_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><strong>Creating plot for car parking spaces required for hotel bookings. Displaying 2 hotel, City and Resort Hotel, guest requesting car park whith children and without children.</strong></p>
+<pre class="r"><code>hotel_stayed %&gt;% count(hotel, required_car_parking_spaces, children) %&gt;% 
+  group_by(hotel, children) %&gt;% mutate(proportion = n/sum(n)) %&gt;% 
+  ggplot(aes(required_car_parking_spaces, proportion, fill = children)) + geom_col(position = &quot;dodge&quot;) +
+  scale_y_continuous(labels = scales::percent_format()) + 
+  facet_wrap(~hotel, nrow = 2)</code></pre>
+<p><img src="hotel_booking_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><strong>Displaying relationship between different category.</strong></p>
+<pre class="r"><code>hotel_stayed %&gt;% select(children, adr, required_car_parking_spaces, total_of_special_requests)%&gt;%
+  ggpairs(mapping = aes(color = children))</code></pre>
+<pre><code>## 
+ plot: [1,1] [===&gt;------------------------------------------------------------]  6% est: 0s 
+ plot: [1,2] [=======&gt;--------------------------------------------------------] 12% est: 2s 
+ plot: [1,3] [===========&gt;----------------------------------------------------] 19% est: 3s 
+ plot: [1,4] [===============&gt;------------------------------------------------] 25% est: 3s 
+ plot: [2,1] [===================&gt;--------------------------------------------] 31% est: 3s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [2,2] [=======================&gt;----------------------------------------] 38% est: 3s 
+ plot: [2,3] [===========================&gt;------------------------------------] 44% est: 2s 
+ plot: [2,4] [===============================&gt;--------------------------------] 50% est: 2s 
+ plot: [3,1] [===================================&gt;----------------------------] 56% est: 2s 
+ plot: [3,2] [=======================================&gt;------------------------] 62% est: 2s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [3,3] [===========================================&gt;--------------------] 69% est: 1s 
+ plot: [3,4] [===============================================&gt;----------------] 75% est: 1s 
+ plot: [4,1] [===================================================&gt;------------] 81% est: 1s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [4,2] [=======================================================&gt;--------] 88% est: 1s 
+ plot: [4,3] [===========================================================&gt;----] 94% est: 0s `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## 
+ plot: [4,4] [================================================================]100% est: 0s 
+                                                                                            </code></pre>
+<p><img src="hotel_booking_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+</body>
+</html>
