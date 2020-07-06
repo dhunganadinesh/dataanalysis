@@ -100,14 +100,4 @@ final_df %>% count(survived, sort = TRUE)
 
 ```
 
-**Plotting the output according to sex and fare division.**
-```{r, warning= FALSE}
-
-ggplot(data = final_df, aes(x = sex, fill = as.factor(survived)) ) + geom_bar() + theme_bw() + labs(fill = "survived") + facet_wrap(~fare_div)
-
-final_df %>% ggpairs(mapping = aes(color = survived))
-
-
-```
-
 
