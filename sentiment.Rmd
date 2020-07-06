@@ -23,7 +23,7 @@ interview <- read_csv("~/Desktop/CSV/townhall_trump.csv")
 
 ```
 
-**The transcript of the President Donald Trump interview with the reported has been loaded to analyse his sentiments during the interview.**
+**The transcript of the President Donald Trump interview with the reporter has been loaded to analyse his sentiments during the interview.**
 ```{r}
 head(interview)
 ```
